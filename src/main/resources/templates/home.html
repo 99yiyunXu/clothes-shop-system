@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LUNA Clothes Shop</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f7f4ef;
+            color: #333;
+        }
+
+        header {
+            background-color: #4f3d32;
+            color: white;
+            padding: 18px 50px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 30px;
+            letter-spacing: 5px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 70px 20px 40px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #777;
+            font-size: 18px;
+        }
+
+        .welcome {
+            margin-top: 18px;
+            color: #6a5546;
+            font-size: 17px;
+        }
+
+        .menu {
+            width: 900px;
+            max-width: 90%;
+            margin: 30px auto;
+
+            display: flex;
+            gap: 25px;
+        }
+
+        .card {
+            flex: 1;
+            background-color: white;
+            padding: 35px 25px;
+            border-radius: 15px;
+            text-align: center;
+
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            color: #4f3d32;
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .card a {
+            display: inline-block;
+            margin-top: 15px;
+
+            padding: 10px 20px;
+
+            background-color: #6b5140;
+            color: white;
+
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .card a:hover {
+            background-color: #4f3d32;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 70px;
+            padding-bottom: 30px;
+
+            color: #aaa;
+            font-size: 13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        LUNA
+    </div>
+
+    <nav>
+        <a href="#">ホーム</a>
+        <a href="#">商品一覧</a>
+        <a href="#">商品管理</a>
+        <a href="/">ログアウト</a>
+    </nav>
+
+</header>
+
+
+<section class="hero">
+
+    <h1>LUNA Clothes Shop</h1>
+
+    <p>アパレルショップ管理システム</p>
+
+    <div class="welcome">
+        ようこそ、
+        <span th:text="${userName}"></span>
+        さん！
+    </div>
+
+</section>
+
+
+<div class="menu">
+
+    <div class="card">
+
+        <h2>商品一覧</h2>
+
+        <p>
+            登録されている商品を
+            一覧で確認できます。
+        </p>
+
+        <a href="#">
+            商品を見る
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>商品管理</h2>
+
+        <p>
+            新しい商品の登録や
+            商品情報の更新を行います。
+        </p>
+
+        <a href="#">
+            管理する
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>在庫管理</h2>
+
+        <p>
+            商品の在庫数や
+            在庫状況を確認します。
+        </p>
+
+        <a href="#">
+            確認する
+        </a>
+
+    </div>
+
+</div>
+
+
+<footer>
+    © 2026 LUNA Clothes Shop
+</footer>
+
+</body>
+
+</html>

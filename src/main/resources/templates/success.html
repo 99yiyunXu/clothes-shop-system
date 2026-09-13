@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Success</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f1eb;
+            text-align: center;
+            padding-top: 150px;
+        }
+
+        .box {
+            background-color: white;
+            width: 400px;
+            margin: auto;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #333;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+        }
+
+        a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>ログイン成功</h1>
+
+    <p>
+        ようこそ、
+        <span th:text="${userName}"></span>
+        さん！
+    </p>
+
+    <p>Luna アパレルショップ管理システムへようこそ。</p>
+
+    <a href="/">ログアウト</a>
+
+</div>
+
+</body>
+</html>

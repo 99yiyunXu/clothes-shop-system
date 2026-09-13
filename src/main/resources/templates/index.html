@@ -1,30 +1,190 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Luna</title>
+    <title>Luna Login</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            background: linear-gradient(
+                135deg,
+                #f5eee6,
+                #d7c4b5
+            );
+
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            width: 380px;
+
+            background-color: white;
+
+            padding: 45px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 36px;
+            letter-spacing: 6px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 35px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+
+            color: #555;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+
+            border: 1px solid #ccc;
+            border-radius: 8px;
+
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #8c7564;
+        }
+
+        button {
+            width: 100%;
+
+            margin-top: 28px;
+            padding: 13px;
+
+            border: none;
+            border-radius: 8px;
+
+            background-color: #5e4b3c;
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45362c;
+        }
+
+        .error {
+            background-color: #ffeaea;
+            color: #d33;
+
+            padding: 10px;
+
+            margin-top: 15px;
+
+            border-radius: 7px;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<h1>Luna 服装店管理システム</h1>
-<p>Lunaへようこそ。</p>
+<div class="login-box">
+
+    <div class="logo">
+        LUNA
+    </div>
+
+    <div class="subtitle">
+        アパレルショップ管理システム
+    </div>
 
 
-<form action="/index2" method="get">
+    <form action="/login" method="post">
 
-    ID：
-    <input type="text" name="userName">
+        <label>
+            ユーザーID
+        </label>
 
-    <br>
+        <input
+            type="text"
+            name="userName"
+            placeholder="ユーザーIDを入力してください"
+            required
+        >
 
-    Password：
-    <input type="password" name="password">
 
-    <br>
+        <label>
+            パスワード
+        </label>
 
-    <button type="submit">送信</button>
+        <input
+            type="password"
+            name="password"
+            placeholder="パスワードを入力してください"
+            required
+        >
 
-</form>
+
+        <button type="submit">
+            ログイン
+        </button>
+
+    </form>
+
+
+    <div
+        th:if="${error}"
+        th:text="${error}"
+        class="error">
+    </div>
+
+
+    <div class="footer">
+        © 2026 LUNA Clothes Shop
+    </div>
+
+</div>
 
 </body>
+
 </html>
