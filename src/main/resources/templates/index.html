@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
     <title>Luna Login</title>
 
     <style>
@@ -121,6 +123,38 @@
             color: #aaa;
             font-size: 12px;
         }
+		
+		/* スマートフォン画面 */
+		@media screen and (max-width: 600px) {
+
+		    body {
+		        padding: 20px;
+		    }
+
+		    .login-box {
+		        width: 100%;
+		        max-width: 360px;
+		        padding: 30px 25px;
+		    }
+
+		    .logo {
+		        font-size: 30px;
+		    }
+
+		    .subtitle {
+		        font-size: 14px;
+		    }
+
+		    input {
+		        font-size: 16px;
+		        padding: 14px;
+		    }
+
+		    button {
+		        font-size: 16px;
+		        padding: 14px;
+		    }
+		}
 
     </style>
 
@@ -139,17 +173,18 @@
     </div>
 
 
-    <form action="/login" method="post">
+<!--   <form action="/login" method="post">-->
 
         <label>
             ユーザーID
         </label>
 
         <input
+		    id="userName"
             type="text"
             name="userName"
             placeholder="ユーザーIDを入力してください"
-            required
+            
         >
 
 
@@ -158,18 +193,19 @@
         </label>
 
         <input
+		    id="password"
             type="password"
             name="password"
             placeholder="パスワードを入力してください"
-            required
+           
         >
 
 
-        <button type="submit">
-            ログイン
-        </button>
+		<button id="btnTest" type="button">
+		    ログイン
+		</button>
 
-    </form>
+<!--    </form>-->
 
 
     <div
@@ -183,8 +219,54 @@
         © 2026 LUNA Clothes Shop
     </div>
 
+	
 </div>
 
-</body>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+	<script>
+	$(document).ready(function () {
+
+	    $("#btnTest").click(function () {
+
+	        let userName = $("#userName").val();
+	        let password = $("#password").val();
+			
+		//
+			if (userName == "" || password == "") {
+			alert("ユーザー名とパスワードを入力してください。");
+			        return;
+			    }
+
+	        console.log(userName);
+	        console.log(password);
+
+	        $.ajax({
+	            url: "/login",
+	            type: "post",
+	            data: {
+	                userName: userName,
+	                password: password
+	            },
+
+				success: function (data) {
+
+				       if (data == "ok") {
+				           window.location.href = "/home";
+				       } else {
+				           alert("ログイン失敗");
+				       }
+				   },
+				   
+	            error: function () {
+	                alert("请求失败");
+	            }
+	        });
+
+	    });
+
+	});
+	</script>
+
+</body>
 </html>
