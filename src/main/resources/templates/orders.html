@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>注文一覧 | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+</head>
+<body>
+<header th:replace="~{fragments/shop :: header}">
+</header>
+<main class="container">
+<h1 th:text="${adminView ? '注文管理' : '注文履歴'}">
+</h1>
+<div th:replace="~{fragments/shop :: messages}">
+</div>
+<p class="empty" th:if="${orderPage.empty}">注文がありません。</p>
+<div class="table-wrap" th:unless="${orderPage.empty}">
+<table>
+<thead>
+<tr>
+<th>注文番号</th>
+<th>注文日時</th>
+<th th:if="${adminView}">ユーザー</th>
+<th>合計</th>
+<th>状態</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="order : ${orderPage.content}">
+<td>
+<a th:href="@{${adminView ? '/admin/orders/' + order.id : '/orders/' + order.id}}" th:text="|#${order.id}|">
+</a>
+</td>
+<td th:text="${#temporals.format(order.createdAt, 'yyyy/MM/dd HH:mm')}">
+</td>
+<td th:if="${adminView}" th:text="${order.user.username}">
+</td>
+<td th:text="|¥${#numbers.formatInteger(order.total, 1, 'COMMA')}|">
+</td>
+<td th:text="${order.status.label}">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<nav th:replace="~{fragments/shop :: pagination(${orderPage}, ${adminView ? '/admin/orders' : '/orders'})}">
+</nav>
+</main>
+</body>
+</html>

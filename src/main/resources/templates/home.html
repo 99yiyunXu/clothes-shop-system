@@ -11,6 +11,7 @@
 
 <title>LUNA Clothes Shop</title>
 
+<link rel="stylesheet" th:href="@{/css/shop.css}">
 <style>
 
 /* 共通設定 */
@@ -416,6 +417,7 @@ body {
 
 </style>
 
+<script th:src="@{/js/product-images.js}" th:attr="data-fallback=@{/images/common/no-image.svg}"></script>
 </head>
 
 <body>
@@ -431,30 +433,21 @@ body {
 
 
         <!-- 商品検索 -->
-        <div class="search">
-
-            <input
-                type="text"
-                placeholder="商品を検索">
-
-            <button>
-                検索
-            </button>
-
-        </div>
+        <form class="search" th:action="@{/products}" method="get">
+            <input type="text" name="keyword" placeholder="商品を検索">
+            <button type="submit">検索</button>
+        </form>
 
 
         <div class="header-menu">
-
-            <a href="#">お気に入り</a>
-
-            <a href="#">カート</a>
-
-            <a href="/logout">
-                ログアウト
-            </a>
-
-        </div>
+            <a th:href="@{/favorites}">お気に入り</a>
+            <a th:href="@{/cart}">カート</a>
+            <a th:href="@{/orders}">注文履歴</a>
+            <a th:if="${isAdmin}" th:href="@{/admin/products}">商品管理</a>
+            <a th:if="${isAdmin}" th:href="@{/admin/orders}">注文管理</a>
+            <a class="admin-entry" th:if="${isAdmin}" th:href="@{/admin}">管理者画面</a>
+            <form class="logout-form" th:action="@{/logout}" method="post"><button type="submit">ログアウト</button></form>
+</div>
 
     </div>
 
@@ -463,29 +456,27 @@ body {
 
         <div class="nav-inner">
 
-            <a href="/home">
+            <a th:href="@{/home}">
                 ホーム
             </a>
 
-            <a href="#">
+            <a th:href="@{/products}">
                 新着商品
             </a>
 
-            <a href="#">
+            <a th:href="@{/products(category='レディース')}">
                 レディース
             </a>
 
-            <a href="#">
+            <a th:href="@{/products(category='メンズ')}">
                 メンズ
             </a>
 
-            <a href="#">
+            <a th:href="@{/products(category='アクセサリー')}">
                 アクセサリー
             </a>
 
-            <a href="#">
-                SALE
-            </a>
+            <a th:href="@{/products(sale=true)}">SALE</a>
 
         </div>
 
@@ -499,7 +490,7 @@ body {
 <section class="main-banner">
 
     <img id="randomBanner"
-         src="/images/woman1.png"
+         th:src="@{/images/woman1.png}" th:data-endpoint="@{/api/random-image}"
          alt="LUNA メインバナー">
 
 </section>
@@ -529,7 +520,7 @@ body {
         </div>
 
         <div class="service-text">
-            条件を満たした注文が対象
+            商品合計10,000円以上が対象
         </div>
 
     </div>
@@ -551,11 +542,11 @@ body {
     <div class="service">
 
         <div class="service-title">
-            安全な決済
+            デモ決済
         </div>
 
         <div class="service-text">
-            安全なショッピング
+            学習用・実際の請求なし
         </div>
 
     </div>
@@ -574,12 +565,12 @@ body {
 
 	<div class="product-grid">
 
-	    <div class="product-card"
+	    <a class="product-card" th:href="@{/products/{id}(id=${product.id})}"
 	         th:each="product : ${newProducts}">
 
 	        <img
 	            class="product-image"
-	            th:src="${product.imageUrl}"
+	            data-product-image th:src="@{${productImages.resolve(product.imageUrl)}}"
 	            th:alt="${product.name}">
 
 	        <div class="product-name"
@@ -590,7 +581,7 @@ body {
 	            ¥<span th:text="${product.price}"></span>
 	        </div>
 
-	    </div>
+	    </a>
 
 	</div>
 	<!-- おすすめ商品 -->
@@ -600,12 +591,12 @@ body {
 
 	<div class="product-grid">
 
-	    <div class="product-card"
+	    <a class="product-card" th:href="@{/products/{id}(id=${product.id})}"
 	         th:each="product : ${recommendedProducts}">
 
 	        <img
 	            class="product-image"
-	            th:src="${product.imageUrl}"
+	            data-product-image th:src="@{${productImages.resolve(product.imageUrl)}}"
 	            th:alt="${product.name}">
 
 	        <div class="product-name"
@@ -616,7 +607,7 @@ body {
 	            ¥<span th:text="${product.price}"></span>
 	        </div>
 
-	    </div>
+	    </a>
 
     </div>
 
@@ -637,6 +628,7 @@ body {
 
 
             <div class="sub-banner-text">
+                <a class="button" th:href="@{${banner.link}}">商品を見る</a>
 
                 <p
                     th:text="${banner.subTitle}">
@@ -666,13 +658,13 @@ body {
 
 
             <!-- カテゴリーをバックエンドから表示する -->
-            <div
+            <a th:href="@{/products(category=${category.name})}"
                 class="category-item"
                 th:each="category : ${categories}">
 
 
                 <img
-                    th:src="${category.imageUrl}"
+                    data-product-image th:src="@{${productImages.resolve(category.imageUrl)}}"
                     th:alt="${category.name}">
 
 
@@ -680,7 +672,7 @@ body {
                     th:text="${category.name}">
                 </p>
 
-            </div>
+            </a>
 
         </div>
 
@@ -691,11 +683,13 @@ body {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    fetch("/api/random-image")
+    fetch(document.getElementById("randomBanner").dataset.endpoint)
+        .then(response => { if (!response.ok) throw new Error("画像を取得できません。"); return response; })
         .then(response => response.text())
         .then(imageUrl => {
             document.getElementById("randomBanner").src = imageUrl;
-        });
+        })
+        .catch(() => {});
 
 });
 </script>

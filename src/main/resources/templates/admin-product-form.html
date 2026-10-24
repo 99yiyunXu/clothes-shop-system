@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商品編集 | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+<script defer th:src="@{/js/admin-image-upload.js}"></script>
+</head>
+<body>
+<header th:replace="~{fragments/shop :: header}">
+</header>
+<main class="container">
+<h1 th:text="${product.id == null ? '商品を追加' : '商品を編集'}">
+</h1>
+<div th:replace="~{fragments/shop :: messages}">
+</div>
+<p class="muted">商品情報を入力し、最後に登録・更新ボタンを押してください。画像は後から設定できます。</p>
+<form class="panel" th:action="@{/admin/products/save}" th:object="${product}" method="post">
+<input type="hidden" th:field="*{id}">
+<input type="hidden" th:field="*{version}">
+<label class="field">
+<span>商品名</span>
+<input th:field="*{name}" required maxlength="100">
+</label>
+<label class="field">
+<span>価格（円）</span>
+<input type="number" th:field="*{price}" min="0" max="100000000" required>
+</label>
+<label class="field">
+<span>在庫</span>
+<input type="number" th:field="*{stock}" min="0" max="1000000" required>
+<span class="muted" th:text="${product.id == null ? '初期在庫を入力してください。0件でも登録できますが、購入はできません。' : '保存後の在庫総数を入力してください。入力値が現在の在庫を置き換えます。'}"></span>
+</label>
+<label class="field">
+<span>分類</span>
+<select th:field="*{category}" required>
+<option value="">選択してください</option>
+<option value="レディース">レディース</option>
+<option value="メンズ">メンズ</option>
+<option value="アクセサリー">アクセサリー</option>
+</select>
+</label>
+<label class="field">
+<span>画像パス（空欄の場合：NO IMAGE／例：/images/products/knit1.png）</span>
+<input th:field="*{imageUrl}" maxlength="255">
+<span class="muted">登録済みの画像パスを指定するか、下の操作で画像をアップロードしてください。空欄の場合は NO IMAGE を表示します。</span>
+</label>
+<div id="image-upload-controls" th:attr="data-upload-url=@{/admin/product-images},data-context=@{/},data-csrf-header=${_csrf.headerName},data-fallback=@{/images/common/no-image.svg}">
+<label class="field" for="product-image-file">
+<span>商品画像をアップロード（JPG・PNG・WebP、1件5 MB以下）</span>
+<input id="product-image-file" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+</label>
+<p class="muted">推奨比率は3:4です。アップロード後に画像を確認し、「この画像を使用する」を押してください。商品との関連付けは最後の登録・更新時に保存されます。</p>
+<img id="product-image-preview" width="225" height="300" th:src="@{${productImages.resolve(product.imageUrl)}}" alt="商品画像のプレビュー">
+<div class="actions">
+<button id="upload-product-image" class="secondary" type="button">アップロードして確認</button>
+<button id="confirm-product-image" type="button" disabled>この画像を使用する</button>
+<button id="discard-product-image" class="secondary" type="button">選択を取り消す</button>
+</div>
+<p id="image-upload-status" class="muted" role="status" aria-live="polite"></p>
+</div>
+<label class="field">
+<span>商品説明</span>
+<textarea th:field="*{description}" maxlength="2000">
+</textarea>
+</label>
+<label class="check">
+<input type="checkbox" th:field="*{active}" aria-describedby="visibility-help">公開する（販売中）</label>
+<p id="visibility-help" class="muted">チェックを入れて保存すると、商品一覧・検索に表示され、ホームのランダムおすすめ候補になります。外すと非公開になり、データは保持されます。</p>
+<label class="check">
+<input type="checkbox" th:field="*{sale}">セール商品</label>
+<div class="actions">
+<button type="submit" th:text="${product.id == null ? '商品を登録する' : '変更を保存する'}">保存する</button>
+<a th:href="@{/admin/products}">保存せず一覧へ戻る</a>
+</div>
+</form>
+</main>
+</body>
+</html>

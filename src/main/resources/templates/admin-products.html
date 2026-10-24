@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商品管理 | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+<script th:src="@{/js/product-images.js}" th:attr="data-fallback=@{/images/common/no-image.svg}"></script>
+</head>
+<body>
+<header th:replace="~{fragments/shop :: header}">
+</header>
+<main class="container">
+<h1>商品管理</h1>
+<div th:replace="~{fragments/shop :: messages}">
+</div>
+<p class="muted">公開中の商品は商品一覧・検索に表示され、ホームのおすすめに最大4件ランダムで表示されます。画像がなくても登録・公開できます。</p>
+<p class="muted" th:text="|登録商品：${productPage.totalElements}件（公開・非公開を含む）|">
+</p>
+<p>
+<a class="button" th:href="@{/admin/products/new}">商品を追加</a>
+<a class="button secondary" th:href="@{/products}">公開中の商品を確認</a>
+</p>
+<p class="empty" th:if="${productPage.totalElements == 0}">商品がまだありません。「商品を追加」から登録してください。</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>商品</th>
+<th>分類</th>
+<th>価格</th>
+<th>在庫</th>
+<th>状態</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="product : ${productPage.content}">
+<td>
+<img class="thumb" data-product-image th:src="@{${productImages.resolve(product.imageUrl)}}" alt="">
+<p th:text="${product.name}">
+</p>
+<span class="muted" th:if="${productImages.resolve(product.imageUrl) == '/images/common/no-image.svg'}">画像準備中（NO IMAGE）</span>
+</td>
+<td th:text="${product.category}">
+</td>
+<td th:text="|¥${#numbers.formatInteger(product.price, 1, 'COMMA')}|">
+</td>
+<td th:text="${product.stock}">
+</td>
+<td>
+<span th:text="${product.active ? '公開中（販売中）' : '非公開（販売終了）'}"></span>
+<span class="muted" th:if="${product.active and product.stock == 0}">在庫切れ・購入不可</span>
+</td>
+<td>
+<a class="button" th:href="@{/admin/products/{id}/edit(id=${product.id})}" th:text="${product.active ? '編集' : '編集・再公開'}">編集</a>
+<a class="button secondary" th:if="${product.active}" th:href="@{/products/{id}(id=${product.id})}">商品ページ</a>
+<form class="inline-form" th:if="${product.active}" th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post" onsubmit="return confirm('この商品を非公開にしますか？商品データと注文履歴は保持されます。');">
+<button class="danger" type="submit">非公開にする</button>
+</form>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<nav th:replace="~{fragments/shop :: pagination(${productPage}, '/admin/products')}">
+</nav>
+</main>
+</body>
+</html>

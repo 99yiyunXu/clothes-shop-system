@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>注文確認 | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+<link rel="stylesheet" th:href="@{/css/checkout.css}">
+<script th:src="@{/js/product-images.js}" th:attr="data-fallback=@{/images/common/no-image.svg}"></script>
+</head>
+<body class="checkout-page">
+<header class="checkout-header">
+<div class="checkout-header-main">
+<a class="shop-logo" th:href="@{/home}">LUNA</a>
+<form class="checkout-search" th:action="@{/products}" method="get" role="search">
+<input type="search" name="keyword" placeholder="商品を検索" aria-label="商品を検索">
+<button type="submit">検索</button>
+</form>
+<nav class="checkout-header-menu" aria-label="ショップナビゲーション">
+<a th:href="@{/favorites}">お気に入り</a>
+<a th:href="@{/cart}">カート</a>
+<a th:href="@{/orders}">注文履歴</a>
+<a class="admin-entry" th:if="${isAdmin}" th:href="@{/admin}">管理者画面</a>
+<form class="logout-form" th:action="@{/logout}" method="post"><button type="submit">ログアウト</button></form>
+</nav>
+</div>
+</header>
+<main class="container checkout-main">
+<nav class="checkout-progress" aria-label="ご注文の流れ">
+<ol>
+<li><a th:href="@{/cart}"><span class="step-number">1</span>カート</a></li>
+<li aria-current="step"><span class="step-number">2</span>ご注文手続き</li>
+<li><span class="step-number">3</span>注文完了</li>
+</ol>
+</nav>
+<h1>注文内容の確認</h1>
+<p class="checkout-intro">お届け先とご注文内容をご確認ください。</p>
+<div th:replace="~{fragments/shop :: messages}">
+</div>
+<!-- 配送先と注文確定ボタンを同じフォームに含め、従来の送信項目と CSRF 保護を維持する。 -->
+<form id="checkout-form" class="checkout-layout" th:action="@{/orders}" method="post">
+<input type="hidden" name="checkoutToken" th:value="${checkoutToken}">
+<section class="panel checkout-delivery" aria-labelledby="delivery-heading">
+<h2 id="delivery-heading">お届け先情報</h2>
+<p class="checkout-section-note">商品をお届けするお名前と住所をご入力ください。</p>
+<div class="field">
+<label for="checkout-recipient">お名前 <span class="checkout-required">必須</span></label>
+<input id="checkout-recipient" name="recipient" th:value="${recipient}" maxlength="100" required autocomplete="shipping name" placeholder="山田 花子">
+</div>
+<div class="field">
+<label for="checkout-address">配送先住所 <span class="checkout-required">必須</span></label>
+<p id="address-help" class="checkout-field-note">郵便番号・都道府県から、建物名・部屋番号までご入力ください。</p>
+<textarea id="checkout-address" name="address" th:text="${address}" maxlength="500" required autocomplete="shipping street-address" aria-describedby="address-help" rows="6" placeholder="〒100-0001&#10;東京都千代田区〇〇 1-2-3&#10;LUNAマンション 101号室">
+</textarea>
+</div>
+<div class="checkout-delivery-note">
+<p>入力内容をご確認ください</p>
+<span>住所に不足がないか、注文確定前にもう一度お確かめください。</span>
+</div>
+</section>
+<section class="panel checkout-summary" aria-labelledby="summary-heading">
+<div class="checkout-summary-heading">
+<h2 id="summary-heading">ご注文内容</h2>
+<a th:href="@{/cart}">カートを編集</a>
+</div>
+<ul class="checkout-items">
+<li class="checkout-item" th:each="line : ${cart.lines}">
+<span class="checkout-item-visual">
+<img class="checkout-item-image" width="66" height="88" data-product-image th:src="@{${productImages.resolve(line.imageUrl)}}" th:alt="${line.name}">
+<span class="checkout-no-image" aria-hidden="true">NO IMAGE</span>
+</span>
+<div class="checkout-item-info">
+<p class="checkout-item-name" th:text="${line.name}"></p>
+<p class="checkout-unit-price" th:text="|単価 ¥${#numbers.formatInteger(line.price, 1, 'COMMA')}|"></p>
+<div class="checkout-item-amounts">
+<span th:text="|数量 ${line.quantity}|"></span>
+<strong th:text="|小計 ¥${#numbers.formatInteger(line.lineTotal, 1, 'COMMA')}|"></strong>
+</div>
+</div>
+</li>
+</ul>
+<dl class="checkout-totals">
+<div><dt>商品小計</dt><dd th:text="|¥${#numbers.formatInteger(cart.subtotal, 1, 'COMMA')}|"></dd></div>
+<div><dt>送料</dt><dd th:text="|¥${#numbers.formatInteger(cart.shippingFee, 1, 'COMMA')}|"></dd></div>
+<div class="checkout-total"><dt>お支払い合計</dt><dd th:text="|¥${#numbers.formatInteger(cart.total, 1, 'COMMA')}|"></dd></div>
+</dl>
+<p class="checkout-shipping-note" th:if="${cart.shippingFee == 0}">このご注文は送料無料です。</p>
+<p class="checkout-shipping-note" th:unless="${cart.shippingFee == 0}">商品合計10,000円以上で送料無料</p>
+<button class="checkout-submit" type="submit">注文を確定する</button>
+<p class="checkout-order-note">注文時に最新の価格と在庫を確認します。</p>
+<p class="checkout-demo-note">支払いは学習用デモです。実際の請求はありません。</p>
+</section>
+</form>
+</main>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カート | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+<script th:src="@{/js/product-images.js}" th:attr="data-fallback=@{/images/common/no-image.svg}"></script>
+</head>
+<body>
+<header th:replace="~{fragments/shop :: header}">
+</header>
+<main class="container">
+<h1>カート</h1>
+<div th:replace="~{fragments/shop :: messages}">
+</div>
+<p class="empty" th:if="${#lists.isEmpty(cart.lines)}">カートに商品がありません。<a th:href="@{/products}">商品を探す</a>
+</p>
+<div th:if="${!#lists.isEmpty(cart.lines)}">
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>商品</th>
+<th>価格</th>
+<th>数量</th>
+<th>小計</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="line : ${cart.lines}">
+<td>
+<img class="thumb" data-product-image th:src="@{${productImages.resolve(line.imageUrl)}}" alt="">
+<p>
+<a th:if="${line.active}" th:href="@{/products/{id}(id=${line.productId})}" th:text="${line.name}">
+</a>
+<span th:unless="${line.active}" th:text="${line.name}">
+</span>
+</p>
+<small class="error" th:if="${!line.active or line.stock < line.quantity}">販売終了または在庫不足</small>
+</td>
+<td th:text="|¥${#numbers.formatInteger(line.price, 1, 'COMMA')}|">
+</td>
+<td>
+<form class="inline-form" th:action="@{/cart/{id}/update(id=${line.id})}" method="post">
+<input class="quantity" type="number" name="quantity" th:value="${line.quantity}" min="1" max="99" required>
+<button type="submit">更新</button>
+</form>
+</td>
+<td th:text="|¥${#numbers.formatInteger(line.lineTotal, 1, 'COMMA')}|">
+</td>
+<td>
+<form th:action="@{/cart/{id}/remove(id=${line.id})}" method="post">
+<button class="danger" type="submit">削除</button>
+</form>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="totals">
+<p th:text="|商品合計：¥${#numbers.formatInteger(cart.subtotal, 1, 'COMMA')}|">
+</p>
+<p th:text="|送料：¥${cart.shippingFee}（商品合計10,000円以上で無料）|">
+</p>
+<h2 th:text="|合計：¥${#numbers.formatInteger(cart.total, 1, 'COMMA')}|">
+</h2>
+<a class="button" th:href="@{/checkout}">注文内容の確認へ</a>
+</div>
+</div>
+</main>
+</body>
+</html>

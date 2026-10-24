@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>注文詳細 | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+<script th:src="@{/js/product-images.js}" th:attr="data-fallback=@{/images/common/no-image.svg}"></script>
+</head>
+<body>
+<header th:replace="~{fragments/shop :: header}">
+</header>
+<main class="container" th:with="status=${order.status.name()}">
+<h1 th:text="|注文 #${order.id}|">
+</h1>
+<div th:replace="~{fragments/shop :: messages}">
+</div>
+<section class="panel">
+<p th:text="|状態：${order.status.label}|">
+</p>
+<p th:text="|注文日時：${#temporals.format(order.createdAt, 'yyyy/MM/dd HH:mm')}|">
+</p>
+<p th:if="${adminView}" th:text="|ユーザー：${order.user.username}|">
+</p>
+<h2>配送先</h2>
+<p th:text="${order.recipient}">
+</p>
+<p class="description" th:text="${order.address}">
+</p>
+<p th:if="${order.trackingNumber}" th:text="|追跡番号：${order.trackingNumber}|">
+</p>
+<p th:if="${order.returnReason}" th:text="|返品理由：${order.returnReason}|">
+</p>
+</section>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>商品</th>
+<th>注文時の単価</th>
+<th>数量</th>
+<th>小計</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="item : ${order.items}">
+<td>
+<img class="thumb" data-product-image th:src="@{${productImages.resolve(item.imageUrl)}}" alt="">
+<p th:text="${item.productName}">
+</p>
+</td>
+<td th:text="|¥${#numbers.formatInteger(item.unitPrice, 1, 'COMMA')}|">
+</td>
+<td th:text="${item.quantity}">
+</td>
+<td th:text="|¥${#numbers.formatInteger(item.lineTotal, 1, 'COMMA')}|">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="totals">
+<p th:text="|商品合計：¥${#numbers.formatInteger(order.subtotal, 1, 'COMMA')}|">
+</p>
+<p th:text="|送料：¥${order.shippingFee}|">
+</p>
+<h2 th:text="|合計：¥${#numbers.formatInteger(order.total, 1, 'COMMA')}|">
+</h2>
+</div>
+<section class="panel" th:unless="${adminView}">
+<div th:if="${status == 'PENDING'}">
+<p>デモ支払いです。カード情報の入力や実際の請求はありません。</p>
+<div class="actions">
+<form th:action="@{/orders/{id}/pay-demo(id=${order.id})}" method="post">
+<button type="submit">デモ支払いを完了する</button>
+</form>
+<form th:action="@{/orders/{id}/cancel(id=${order.id})}" method="post">
+<button class="danger" type="submit">注文をキャンセル</button>
+</form>
+</div>
+</div>
+<form th:if="${status == 'SHIPPED'}" th:action="@{/orders/{id}/receive(id=${order.id})}" method="post">
+<button type="submit">商品を受け取りました</button>
+</form>
+<form class="actions" th:if="${status == 'SHIPPED' or status == 'COMPLETED'}" th:action="@{/orders/{id}/return(id=${order.id})}" method="post">
+<label class="field">
+<span>返品理由</span>
+<textarea name="reason" maxlength="500" required>
+</textarea>
+</label>
+<button class="secondary" type="submit">返品を申請</button>
+</form>
+</section>
+<section class="panel" th:if="${adminView}">
+<form th:if="${status == 'PAID'}" th:action="@{/admin/orders/{id}/ship(id=${order.id})}" method="post" class="actions">
+<label>追跡番号 <input name="trackingNumber" maxlength="100" required>
+</label>
+<button type="submit">発送済みにする</button>
+</form>
+<form th:if="${status == 'RETURN_REQUESTED'}" th:action="@{/admin/orders/{id}/return(id=${order.id})}" method="post">
+<p>返品商品を確認してから承認してください。返金は学習用デモです。</p>
+<button class="secondary" type="submit">返品を承認し在庫を戻す</button>
+</form>
+</section>
+<a th:href="@{${adminView ? '/admin/orders' : '/orders'}}">注文一覧へ戻る</a>
+</main>
+</body>
+</html>

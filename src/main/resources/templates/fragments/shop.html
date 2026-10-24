@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="shop-header" th:fragment="header" th:classappend="${isAdminPage == true ? 'admin-header' : ''}">
+<nav class="shop-nav">
+  <a class="shop-logo" th:href="@{/home}">LUNA</a>
+  <a th:href="@{/products}">商品一覧</a>
+<a th:href="@{/favorites}">お気に入り</a>
+  <a th:href="@{/cart}">カート</a>
+<a th:href="@{/orders}">注文履歴</a>
+  <a th:if="${isAdmin}" th:href="@{/admin/products}">商品管理</a>
+  <a th:if="${isAdmin}" th:href="@{/admin/orders}">注文管理</a>
+  <a class="button shop-return" th:if="${isAdmin and isAdminPage == true}" th:href="@{/home}">ショップに戻る</a>
+  <span class="muted" th:text="${currentUser}">
+</span>
+  <form class="logout-form" th:action="@{/logout}" method="post">
+<button type="submit">ログアウト</button>
+</form>
+</nav>
+</header>
+<div th:fragment="messages">
+<p class="message" th:if="${message}" th:text="${message}">
+</p>
+<p class="error" role="alert" th:if="${error}" th:text="${error}">
+</p>
+</div>
+<nav class="pagination" th:fragment="pagination(page, path)">
+  <a th:if="${page.hasPrevious()}" th:href="@{${path}(page=${page.number - 1})}">前へ</a>
+  <span th:text="|${page.number + 1} / ${page.totalPages == 0 ? 1 : page.totalPages} ページ|">
+</span>
+  <a th:if="${page.hasNext()}" th:href="@{${path}(page=${page.number + 1})}">次へ</a>
+</nav>
+</body>
+</html>

@@ -59,7 +59,8 @@
 
     <p>Luna アパレルショップ管理システムへようこそ。</p>
 
-    <a href="/">ログアウト</a>
+    <a th:href="@{/home}">ホームへ</a>
+    <form th:action="@{/logout}" method="post"><button type="submit">ログアウト</button></form>
 
 </div>
 

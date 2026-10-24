@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品一覧 | LUNA</title>
+<link rel="stylesheet" th:href="@{/css/shop.css}">
+<style>
+
+/* 共通設定 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
+}
+
+
+/* ヘッダー */
+.header {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.header-main {
+    max-width: 1200px;
+    margin: auto;
+    height: 80px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+}
+
+.logo {
+    font-family: Georgia, serif;
+    font-size: 34px;
+    letter-spacing: 6px;
+}
+
+.search {
+    width: 350px;
+    display: flex;
+}
+
+.search input {
+    width: 100%;
+    padding: 11px 15px;
+
+    border: 1px solid #ccc;
+    border-radius: 20px 0 0 20px;
+}
+
+.search button {
+    border: none;
+    padding: 0 20px;
+
+    background-color: #8b8f63;
+    color: white;
+
+    border-radius: 0 20px 20px 0;
+}
+
+.header-menu a {
+    margin-left: 20px;
+
+    text-decoration: none;
+    color: #444;
+
+    font-size: 14px;
+}
+
+
+/* ナビゲーション */
+.nav {
+    border-top: 1px solid #eee;
+}
+
+.nav-inner {
+    max-width: 1000px;
+    height: 50px;
+
+    margin: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 35px;
+}
+
+.nav-inner a {
+    color: #333;
+    text-decoration: none;
+
+    font-size: 14px;
+}
+
+
+/* メインバナー */
+.main-banner {
+    width: 100%;
+    aspect-ratio: 3 / 1;
+    position: relative;
+    overflow: hidden;
+    background-color: #f3f1eb;
+}
+
+.main-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.banner-text {
+    position: absolute;
+
+    top: 50%;
+    left: 10%;
+
+    transform: translateY(-50%);
+
+    max-width: 400px;
+}
+
+.banner-subtitle {
+    color: #8b8f63;
+
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+.banner-text h1 {
+    font-family: Georgia, serif;
+
+    font-size: 46px;
+
+    margin: 12px 0;
+}
+
+.banner-text p {
+    line-height: 1.8;
+
+    color: #666;
+}
+
+.banner-button {
+    display: inline-block;
+
+    margin-top: 15px;
+
+    padding: 12px 24px;
+
+    background-color: #8b8f63;
+    color: white;
+
+    text-decoration: none;
+}
+
+
+/* サービス */
+.service-area {
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    border-bottom: 1px solid #eee;
+}
+
+.service {
+    padding: 25px;
+
+    text-align: center;
+
+    border-right: 1px solid #eee;
+}
+
+.service:last-child {
+    border-right: none;
+}
+
+.service-title {
+    font-weight: bold;
+
+    font-size: 14px;
+}
+
+.service-text {
+    margin-top: 6px;
+
+    color: #888;
+
+    font-size: 12px;
+}
+
+
+/* コンテンツ */
+.container {
+    max-width: 1100px;
+
+    margin: 50px auto;
+
+    padding: 0 20px;
+}
+
+.section-title {
+    text-align: center;
+
+    font-size: 24px;
+
+    margin-bottom: 30px;
+}
+
+
+/* 商品 */
+.product-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+}
+
+.product-card {
+    background-color: white;
+}
+
+.product-image {
+    width: 100%;
+
+    aspect-ratio: 3 / 4;
+
+    object-fit: cover;
+
+    background-color: #f4f4f4;
+}
+
+.product-name {
+    margin-top: 12px;
+
+    font-size: 14px;
+}
+
+.product-price {
+    margin-top: 7px;
+
+    font-weight: bold;
+}
+
+
+/* サブバナー */
+.sub-banner-area {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+    margin-top: 50px;
+}
+
+.sub-banner {
+    position: relative;
+
+    height: 200px;
+
+    overflow: hidden;
+
+    background-color: #f3f1eb;
+}
+
+.sub-banner img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.sub-banner-text {
+    position: absolute;
+
+    top: 50%;
+    left: 30px;
+
+    transform: translateY(-50%);
+}
+
+.sub-banner-text h3 {
+    font-family: Georgia, serif;
+
+    font-size: 25px;
+
+    margin: 5px 0;
+}
+
+
+/* カテゴリー */
+.category-area {
+    margin-top: 60px;
+}
+
+.category-list {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 30px;
+}
+
+.category-item {
+    text-align: center;
+
+    width: 120px;
+}
+
+.category-item img {
+    width: 100px;
+    height: 100px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+.category-item p {
+    font-size: 13px;
+}
+
+
+/* スマートフォン */
+@media screen and (max-width: 700px) {
+
+    .header-main {
+        height: auto;
+
+        padding: 15px;
+
+        flex-wrap: wrap;
+
+        gap: 15px;
+    }
+
+    .search {
+        width: 100%;
+        order: 3;
+    }
+
+    .header-menu {
+        font-size: 12px;
+    }
+
+    .nav-inner {
+        justify-content: flex-start;
+
+        overflow-x: auto;
+
+        padding: 0 15px;
+    }
+
+    .nav-inner a {
+        white-space: nowrap;
+    }
+
+    .main-banner {
+        height: 330px;
+    }
+
+    .banner-text {
+        left: 7%;
+
+        max-width: 250px;
+    }
+
+    .banner-text h1 {
+        font-size: 32px;
+    }
+
+    .service-area {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sub-banner-area {
+        grid-template-columns: 1fr;
+    }
+
+    .category-list {
+        justify-content: flex-start;
+
+        overflow-x: auto;
+    }
+
+    .category-item {
+        min-width: 100px;
+    }
+}
+
+
+/* 商品一覧画面の追加スタイル */
+.list-heading { margin: 0 0 10px; text-align: center; font-family: Georgia, serif; font-size: 30px; }
+.list-description { color: #777; text-align: center; margin-bottom: 32px; }
+.filter-form { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 35px; }
+.filter-form input, .filter-form select { border: 1px solid #ddd; border-radius: 6px; padding: 11px 14px; min-width: 180px; }
+.filter-form button { background: #8b8f63; border: 0; color: white; border-radius: 6px; padding: 11px 25px; cursor: pointer; }
+.empty-message { text-align: center; color: #777; padding: 50px; }
+</style>
+<script th:src="@{/js/product-images.js}" th:attr="data-fallback=@{/images/common/no-image.svg}"></script>
+</head>
+<body>
+<header class="header">
+
+    <div class="header-main">
+
+        <div class="logo">
+            LUNA
+        </div>
+
+
+        <!-- 商品検索 -->
+        <form class="search" th:action="@{/products}" method="get">
+            <input type="text" name="keyword" placeholder="商品を検索">
+            <button type="submit">検索</button>
+        </form>
+
+
+        <div class="header-menu">
+            <a th:href="@{/favorites}">お気に入り</a>
+            <a th:href="@{/cart}">カート</a>
+            <a th:href="@{/orders}">注文履歴</a>
+            <a th:if="${isAdmin}" th:href="@{/admin/products}">商品管理</a>
+            <a th:if="${isAdmin}" th:href="@{/admin/orders}">注文管理</a>
+            <form class="logout-form" th:action="@{/logout}" method="post"><button type="submit">ログアウト</button></form>
+</div>
+
+    </div>
+
+
+    <nav class="nav">
+
+        <div class="nav-inner">
+
+            <a th:href="@{/home}">
+                ホーム
+            </a>
+
+            <a th:href="@{/products}">
+                新着商品
+            </a>
+
+            <a th:href="@{/products(category='レディース')}">
+                レディース
+            </a>
+
+            <a th:href="@{/products(category='メンズ')}">
+                メンズ
+            </a>
+
+            <a th:href="@{/products(category='アクセサリー')}">
+                アクセサリー
+            </a>
+
+            <a th:href="@{/products(sale=true)}">SALE</a>
+
+        </div>
+
+    </nav>
+
+</header>
+<main class="container">
+  <h1 class="list-heading">商品一覧</h1>
+  <p class="list-description">お気に入りの一着を見つけてください。</p>
+  <form class="filter-form" th:action="@{/products}" method="get">
+    <input type="text" name="keyword" placeholder="商品名を検索" th:value="${keyword}">
+    <select name="category">
+      <option value="">すべてのカテゴリ</option>
+      <option value="レディース" th:selected="${category == 'レディース'}">レディース</option>
+      <option value="メンズ" th:selected="${category == 'メンズ'}">メンズ</option>
+      <option value="アクセサリー" th:selected="${category == 'アクセサリー'}">アクセサリー</option>
+    </select>
+    <label class="check"><input type="checkbox" name="sale" value="true" th:checked="${sale}">セール商品のみ</label>
+    <button type="submit">検索</button>
+  </form>
+  <p class="list-description" th:text="|検索結果：${productPage.totalElements}件|">検索結果</p>
+  <div class="product-grid" th:if="${!#lists.isEmpty(products)}">
+    <a class="product-card" th:each="product : ${products}" th:href="@{/products/{id}(id=${product.id})}">
+      <img class="product-image" data-product-image th:src="@{${productImages.resolve(product.imageUrl)}}" th:alt="${product.name}">
+      <div class="product-name" th:text="${product.name}">商品名</div>
+      <div class="product-price">¥<span th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')}">0</span></div>
+      <span class="badge" th:if="${product.sale}">SALE</span>
+    </a>
+  </div>
+  <p class="empty-message" th:if="${#lists.isEmpty(products)}">該当する商品がありません。</p>
+  <nav class="pagination">
+    <a th:if="${productPage.hasPrevious()}" th:href="@{/products(keyword=${keyword},category=${category},sale=${sale},page=${productPage.number - 1})}">前へ</a>
+    <span th:text="|${productPage.number + 1} / ${productPage.totalPages == 0 ? 1 : productPage.totalPages} ページ|"></span>
+    <a th:if="${productPage.hasNext()}" th:href="@{/products(keyword=${keyword},category=${category},sale=${sale},page=${productPage.number + 1})}">次へ</a>
+  </nav>
+</main>
+</body>
+</html>

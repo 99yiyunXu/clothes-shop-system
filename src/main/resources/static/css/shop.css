@@ -1,0 +1,63 @@
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#333;font-family:Arial,sans-serif}
+a{color:#5e6340;text-decoration:none}
+a:hover{text-decoration:underline}
+.shop-header{border-bottom:1px solid #eee}
+.shop-nav{max-width:1100px;margin:auto;padding:22px 20px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.shop-logo{font:30px Georgia,serif;letter-spacing:6px;margin-right:auto;color:#333}
+.container{max-width:1100px;margin:40px auto;padding:0 20px}
+.panel{padding:25px;border:1px solid #e6e6e0;border-radius:10px;margin-bottom:24px}
+.button,button{display:inline-block;background:#8b8f63;border:0;border-radius:6px;color:white;padding:11px 20px;cursor:pointer;font-size:14px}
+.button:hover{color:white}
+.secondary{background:#756b62}
+.danger{background:#995555}
+.logout-form{display:inline}
+.logout-form button{background:none;color:#444;padding:0}
+.message{padding:14px;background:#f0f5e6;border-radius:6px;margin-bottom:20px}
+.error{padding:14px;background:#ffeaea;color:#a33;border-radius:6px;margin-bottom:20px}
+.field{display:block;margin-bottom:18px}
+.field span{display:block;margin-bottom:7px}
+input,select,textarea{border:1px solid #ccc;border-radius:6px;padding:10px;font:inherit}
+input:not([type=checkbox]):not([type=hidden]),textarea,select{max-width:100%}
+.field input,.field textarea,.field select{width:100%}
+.field textarea{min-height:110px}
+.auth-panel{max-width:430px;margin:auto}
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.product-image{width:100%;aspect-ratio:3/4;object-fit:cover;background:#f4f4f4}
+.product-name{margin-top:12px}
+.product-price{margin:8px 0 15px;font-weight:bold}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:35px}
+.detail-image{width:100%;max-height:650px;object-fit:contain}
+.description{white-space:pre-wrap;line-height:1.8}
+.actions{display:flex;flex-wrap:wrap;gap:15px;align-items:center;margin-top:20px}
+.pagination{display:flex;gap:20px;justify-content:center;align-items:center;margin-top:30px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:15px;text-align:left;border-bottom:1px solid #eee}
+.thumb{width:75px;height:90px;object-fit:cover}
+.quantity{width:75px}
+.totals{text-align:right;line-height:2}
+.muted{color:#777}
+.inline-form{display:inline-flex;gap:8px;align-items:center}
+.badge{padding:4px 8px;border-radius:4px;background:#f2f0df}
+.empty{text-align:center;padding:40px}
+.check{display:flex;gap:10px;align-items:center;margin:15px 0}
+@media(max-width:700px){.product-grid{grid-template-columns:repeat(2,1fr)}
+.detail-grid{grid-template-columns:1fr}
+.shop-nav{gap:14px}
+.container{margin:25px auto}
+.panel{padding:18px}
+}
+
+
+body .header-main{height:auto;min-height:80px;gap:16px;flex-wrap:wrap}
+body .header-menu{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+body .header-menu a{margin-left:0}
+.product-card{color:inherit;display:block}
+.product-card:hover{text-decoration:none}
+
+/* 管理画面との切り替えにだけ適用し、既存のレイアウトと書体は変更しない。 */
+.header-menu a.admin-entry{color:#5e6340}
+.header-menu a.admin-entry:hover{text-decoration:underline}
+.shop-header.admin-header{background:#f4f3ef}
+.admin-header .shop-return{background:#f2f0df;color:#5e6340}
